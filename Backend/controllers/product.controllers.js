@@ -1,9 +1,10 @@
-import { v2 as cloudinary } from 'cloudinary';
 import productModel from '../Models/product.model.js';
 import connectDB from '../config/mongodb.js';
 // add product
 const addProduct = async (req, res) => {
   try {
+    await connectDB();
+
     const {
       name,
       price,
@@ -15,27 +16,30 @@ const addProduct = async (req, res) => {
     } = req.body;
 
     // Handle image uploads from fields
-    const files = req.files;
+    const files = req.files || {};
     const imageFields = ['image1', 'image2', 'image3', 'image4'];
 
-    const uploadedImages = await Promise.all(
-      imageFields.map(async (field) => {
-        if (files[field] && files[field][0]) {
-          console.log('Uploading')
-          const result = await cloudinary.uploader.upload(files[field][0].path, {
-            resource_type: 'image',
-          });
-          return result.secure_url;
-        }
-        return null;
-      })
-    );
+    const imageUrls = imageFields
+      .flatMap((field) => files[field] || [])
+      .map((file) => file.path || file.secure_url || file.filename)
+      .filter(Boolean);
 
-    console.log('uploaded complete')
+    if (imageUrls.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'At least one product image is required',
+      });
+    }
 
-    const imageUrls = uploadedImages.filter((url) => url !== null);
-
-    const parsedSizes = sizes ? JSON.parse(sizes) : [];
+    let parsedSizes = [];
+    try {
+      parsedSizes = sizes ? JSON.parse(sizes) : [];
+    } catch (parseError) {
+      return res.status(400).json({
+        success: false,
+        message: 'Sizes must be a valid JSON array',
+      });
+    }
 
     const productData = {
       name,
@@ -62,6 +66,8 @@ const addProduct = async (req, res) => {
 // removing product
 const removeProduct = async (req, res) => {
   try {
+    await connectDB();
+
     const id = req.body.id;
     await productModel.findByIdAndDelete(id);
     res.status(200).json({ success: true, message: 'Product Deleted' });
@@ -87,6 +93,8 @@ const listProduct = async (req, res) => {
 // for single product info
 const singleProduct = async (req, res) => {
   try {
+    await connectDB();
+
     const { productId } = req.body;
     const product = await productModel.findById(productId);
     res.status(200).json({ success: true, product });
