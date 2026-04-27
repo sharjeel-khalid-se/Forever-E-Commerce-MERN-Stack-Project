@@ -4,7 +4,7 @@ import Title from "../Components/Title";
 import axios from "axios";
 
 const Orders = () => {
-  const { backendUrl, token, curreny } = useContext(ShopContext);
+  const { backendUrl, token, currency } = useContext(ShopContext);
   const [orderData, setOrderData] = useState([]);
 
   const loadOrderData = async () => {
@@ -34,7 +34,9 @@ const Orders = () => {
         console.log(allOrdersItems);
         setOrderData(allOrdersItems.reverse());
       }
-    } catch (error) {}
+    } catch (error) {
+      console.error('Error loading orders:', error);
+    }
   };
 
   useEffect(() => {
@@ -62,7 +64,7 @@ const Orders = () => {
                 </p>
                 <div className="flex items-center gap-3 mt-2 text-base text-gray-700">
                   <p className="text-lg">
-                    {curreny}
+                    {currency}
                     {item.price}
                   </p>
                   <p>Quantity: {item.quantity}</p>

@@ -6,15 +6,13 @@ const orderSchema = new mongoose.Schema(
     items: { type: Array, required: true },
     amount: { type: Number, required: true },
     address: { type: Object, required: true },
-    status: { type: String, required: true },
-    paymentMethod: { type: String, required: true, default: 'Order Placed' },
+    paymentMethod: { type: String, required: true, default: 'COD' },
     payment: { type: Boolean, required: true, default: false },
     status: {
       type: String,
       required: true,
-      default: "Pending", // 👈 Bonus: you can even set default here
+      default: "Pending",
     },
-    
   },
   {
     timestamps: true,

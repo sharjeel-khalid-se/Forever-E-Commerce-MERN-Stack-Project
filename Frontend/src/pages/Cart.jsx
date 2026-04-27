@@ -18,7 +18,7 @@ const Cart = () => {
             tempData.push({
               _id: items,
               size: item,
-              quaninty: cartItems[items][item],
+              quantity: cartItems[items][item],
             });
           }
         }
@@ -77,7 +77,7 @@ const Cart = () => {
                 }
                 type='number'
                 min={1}
-                defaultValue={item.quaninty}
+                defaultValue={item.quantity}
                 className='border max-w-10 sm:max-w-20 px-1 sm:px-2 py-1'
               />
               <img

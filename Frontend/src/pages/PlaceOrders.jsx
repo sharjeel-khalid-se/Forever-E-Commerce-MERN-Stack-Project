@@ -57,6 +57,11 @@ const PlaceOrders = () => {
         }
       }
 
+      if (orderItems.length === 0) {
+        toast.error('Please add items to your cart');
+        return;
+      }
+
       let orderData = {
         address: formData,
         items: orderItems,
@@ -105,7 +110,10 @@ const PlaceOrders = () => {
         default:
           break;
       }
-    } catch (error) {}
+    } catch (error) {
+      console.error('Order placement error:', error);
+      toast.error(error.response?.data?.message || error.message);
+    }
   };
 
   return (
@@ -126,7 +134,7 @@ const PlaceOrders = () => {
             placeholder="First Name"
             onChange={onChangeHandler}
             name="firstName"
-            value={formData.name}
+            value={formData.firstName}
             required
           />
           <input
