@@ -1,6 +1,13 @@
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import dotenv from 'dotenv';
+
+dotenv.config({
+  path: path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '.env'),
+  override: true,
+});
+
 import connectDB from '../config/mongodb.js';
 import cloudinary from '../config/cloudinary.js';
 import productModel from '../Models/product.model.js';
